@@ -1,0 +1,16 @@
+[Unit]
+Description=Jupyter Notebook
+AssertPathExists=/home/mileschristiansmith_gmail_com/miniconda3/envs/jupyter
+
+[Service]
+Type=simple
+PIDFile=/run/jupyter.pid
+User=USER
+Group=USERGROUP
+ExecStart=/bin/bash /home/mileschristiansmith_gmail_com/start-jupyter-service.sh
+WorkingDirectory=/home/mileschristiansmith_gmail_com/
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
