@@ -22,8 +22,8 @@ copyright = "2023, Miles Smith"
 author = "Miles Smith"
 
 # The full version, including alpha/beta/rc tags
-release = '0.2.0'
-version = '0.2.0'
+release = '0.2.1'
+version = '0.2.1'
 
 
 # -- General configuration ---------------------------------------------------
@@ -42,7 +42,7 @@ templates_path = ["_templates"]
 source_suffix = ".rst"
 master_doc = "index"
 default_role = "literal"
-pygments_style = "monokai"
+pygments_style = "sphinx"
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
