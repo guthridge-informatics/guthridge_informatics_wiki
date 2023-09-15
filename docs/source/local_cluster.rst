@@ -228,7 +228,7 @@ There are many common reference datasets & genomes available in
 `/Volumes/hts_core/Shared`. However, in my experience, many of these are out of
 date.
 
-.. _Object Storage:
+.. _Local computing object storage:
 
 Object Storage
 ~~~~~~~~~~~~~~
@@ -240,6 +240,9 @@ object storage.
 
 .. note::
     See this `article from Western Digital <https://blog.westerndigital.com/why-object-storage/>`_ for a good explanation or read about it on `Wikipedia <https://en.wikipedia.org/wiki/Object_storage>`_.
+
+Object storage can only be accessed from within the OMRF network (or when connected via VPN) and requires
+special software to interact with it, such as :ref:`o3-utils <o3-utils>` or :ref:`rclone <Rclone>`
 
 o3-utils
 ........
@@ -272,6 +275,16 @@ straightforward tool, `rclone`_
 .. note::
   The command `o3-tenants` can be used to see what tenants you are part of.
 
+Tenants
+.......
+
+The James/Guthridge labs tenants of which I am aware (as of 2023-07-26)
+
+* LDAP_o3-guthridge-james - this is where a majority of all data is located
+* LDAP_ss-prj-guthridge-scrnaseq - Any single cell transcriptomics/genomics data is stored here 
+* LDAP_ss_prj_gaffney_guthridge_bold
+* LDAP_ss-prj-james-ordc
+
 .. _rclone_local_cluster:
 
 rclone
@@ -279,41 +292,7 @@ rclone
 
 `rclone <rclone.org>`_ is a utility capable of interacting with numerous types
 of object and cloud storage systems, including both OpenStack and Google
-Cloud Storage.
-
-rclone has an interactive configuration subcommand - `rclone config` - but it
-is probably easiest to add the following to the
-`~/.config/rclone/rclone.config` file:
-
-.. code-block:: bash
-
-    [{TENANT}]
-    type = swift
-    env_auth = false
-    user = {OMRF USERNAME}
-    key = {OMRF PASSWORD}
-    auth = https://o3.omrf.org/auth/v2.0
-    tenant = {TENANT}
-    endpoint_type = public
-
-Thereafter, you can access the tenant by running::
-
-    rclone SUBCOMMAND TENANT:CONTAINER/
-
-See the rclone help or `documentation <https://rclone.org/docs/>`_ for more
-details and subcommands. However, probably the three most useful subcommands
-are `copy`, `ls` (to list files), and `lsd` (to list directories).  In the case
-of `copy`, using the `-P` argument will display the progress and ETA of the
-copy.
-
-.. important::
-  By default, rclone will copy the *contents* of a directory to a destination
-  but not the directory itself (unlike `cp`), so make sure to include the
-  destination directory in the command:
-
-  .. code-block:: console
-
-    rclone copy -P source_tenant:container/subdirectory destination/subdirectory
+Cloud Storage. See the :ref:`section on using rclone <Rclone>`for more.
 
 .. _Batch jobs:
 

@@ -8,8 +8,8 @@ Local data sources
 Cluster
 -------
 Data specific to our lab should be located in one of those places: 
-the group folder at `/Volumes/guth_aci_informatics` or in the scratch drive at
-`/s/guth-aci`.  See the :ref:`folders section <Data storage>` of the 
+the group folder at ``/Volumes/guth_aci_informatics`` or in the scratch drive at
+``/s/guth-aci``.  See the :ref:`folders section <Data storage>` of the 
 :ref:`Local computing resources <Local Cluster>` page for more information about
 cluster data storage and access.
 
@@ -39,7 +39,7 @@ o3
 --
 
 Larger files, such as raw sequencing data, will most likely be located in
-:ref:`object storage <Object Storage>`.  Because object storage is explictly
+:ref:`object storage <Local computing object storage>`.  Because object storage is explictly
 designed for archival storage, completed analyses may be placed here as well.
 
 .. _cloud data:

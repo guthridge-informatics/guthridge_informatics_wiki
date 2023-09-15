@@ -9,19 +9,29 @@ Basic Unix
 
 Streams
 ~~~~~~~
-Before going into commands, it is useful to understand how data can flow between commands. There are three input and output streams in the shell:
+Before going into commands, it is useful to understand how data can flow between commands. There are three input and 
+output streams in the shell:
 
 * stdin - Standard input for most commands will look here for input.  Defaults to the keyboard.
 * stdout - Standard output location for data. By default, this will be streamed to the terminal and thus be displayed.
-* stderr - Standard error.  Used for error messages. While this also is streamed to the terminal (unless redirected), it is a separate stream from stdout.  Usually used for log files.
+* stderr - Standard error.  Used for error messages. While this also is streamed to the terminal (unless redirected),
+  it is a separate stream from stdout.  Usually used for log files.
 
 The Pipe
 --------
-Unix has the ethos that all programs should simply do one thing and do it well; complexity is built up by redirecting - or *piping* the output stream of one command into the input stream of another. This pipe is represented by the character `|` (the vertical bar usually found above the enter key) For example, you might have a compressed FASTQ file that you would like to examine the first few lines of for the presence of some gene name. Instead of completely decompressing the file to disk, opening the file in a text editor, and searching for that gene, you could::
+Unix has the ethos that all programs should simply do one thing and do it well; complexity is built up by redirecting -
+or *piping* the output stream of one command into the input stream of another. This pipe is represented by the
+character `|` (the vertical bar usually found above the enter key) For example, you might have a compressed FASTQ
+file that you would like to examine the first few lines of for the presence of some gene name. Instead of completely
+decompressing the file to disk, opening the file in a text editor, and searching for that gene, you could
+
+.. code-block:: bash
 
     user@computer:~/$ gzip --decompress example_fastq.gz | head --lines 100 | grep "gene_name"
 
-This will use `gzip` to decompress the FASTQ; pipe that output to `head`, which will read in the first 100 lines (and then stop gzip from decompressing any further); and then pipe that output to `grep`, which will search those 100 lines for the text of interest.
+This will use `gzip` to decompress the FASTQ; pipe that output to `head`, which will read in the first 100 lines
+(and then stop gzip from decompressing any further); and then pipe that output to `grep`, which will search those
+100 lines for the text of interest.
 
 * `|` - the pipe. Used to move data between commands.
 * `>` - redirects output to a files. Overwrites any existing file.
@@ -33,26 +43,43 @@ This will use `gzip` to decompress the FASTQ; pipe that output to `head`, which 
 
 Unix commands
 ~~~~~~~~~~~~~~
-Most unix commands have 2/3 letter name and do one thing related to that name. Some of the more useful common commands are listed below:
+Most unix commands have 2/3 letter name and do one thing related to that name. Some of the more useful common commands
+are listed below:
 
-* `cat` - *c*\ onc\ *at*\ enate.  While this is frequently used to display text, its actual purpose is to glue files together by directing the contents of several files to `stdout`. For example::
+* `cat` - *c*\ onc\ *at*\ enate.  While this is frequently used to display text, its actual purpose is to glue files 
+  together by directing the contents of several files to `stdout`. For example
 
+  .. code-block:: bash
+  
     cat file1 file2 > file3
 
-  will sequentially read the contents of files 1 and 2, place the data from file 2 at the end of file 1, and save the data to the new file 3.
-* `curl`/`wget` - while there are some major differences between the two, but both are used to download files from http(s) and ftp servers.
+  will sequentially read the contents of files 1 and 2, place the data from file 2 at the end of file 1, and save
+  the data to the new file 3.
+.. _curl_wget:
+* `curl`/`wget` - while there are some major differences between the two, but both are used to download files from
+  http(s) and ftp servers.
 * `cd` - *c*\ hange *d*\ irectory
 * `cp` - *c*\ o\ *p*\ y files
-* `du` - Display the amount of *d*\ isk *u*\ sed.  More helpful when the `-h` argument is passed so that sizes are displayed in human-readable terms.
-* `grep` - *g*\ lobally search a *r*\ egular *e*\ xpression and *p*\ rint.  Regular expressions are one of the most useful things you can learn when it comes to computers - they allow you to find and capture very specific patterns of text; it, however, can be a challanging topic to learn.  See these links for a `tutorial <https://regexone.com/>`_ here and an `interactive sandbox <https://regexr.com/>`_.
-* `gzip`/`bzip`/`xz` - compression/decompression utilities.  Handes files ending in `.gz`, `.bz`, and `.xz`, respectively (though, technically the file format is what is important, not just the file name extension)
+* `du` - Display the amount of *d*\ isk *u*\ sed.  More helpful when the `-h` argument is passed so that sizes are
+  displayed in human-readable terms.
+* `grep` - *g*\ lobally search a *r*\ egular *e*\ xpression and *p*\ rint.  Regular expressions are one of the most
+  useful things you can learn when it comes to computers - they allow you to find and capture very specific patterns
+  of text; it, however, can be a challanging topic to learn.  See these links for a `tutorial <https://regexone.com/>`_
+  here and an `interactive sandbox <https://regexr.com/>`_.
+* `gzip`/`bzip`/`xz` - compression/decompression utilities.  Handes files ending in `.gz`, `.bz`, and `.xz`,
+* respectively (though, technically the file format is what is important, not just the file name extension)
 * `head`/`tail` - display the first or last lines of a files.  By default, shows 50 lines.
 
   - `-n` display *n* lines
   - `-f` have tail *f*\ ollow the end of the file.  Useful for watching a log file.
 
-* `less` - Display a portion of a file, with the ability to move forward several lines by pusing the `space bar` or `enter`
-* `ln` - create a *l*\ i\ *n*\ k to a file.  By default, creates a *hard* link, which associates a name with a file. More often, a *soft* link is what is desired, which is a shortcut to a target file or directory (also a file in UNIX).  Soft links are useful because they are typically transparent (so if one program is looking for libraries in a particular location but the distrobution happens to put them somewhere else, a soft link can fix the issue) and because the target does not have to exist when the link is created.  Usage is easy to mix up, but takes the form of::
+* `less` - Display a portion of a file, with the ability to move forward several lines by pusing the `space bar` or
+  `enter`
+* `ln` - create a *l*\ i\ *n*\ k to a file.  By default, creates a *hard* link, which associates a name with a file.
+  More often, a *soft* link is what is desired, which is a shortcut to a target file or directory (also a file in UNIX).
+  Soft links are useful because they are typically transparent (so if one program is looking for libraries in a
+  particular location but the distrobution happens to put them somewhere else, a soft link can fix the issue) and
+  because the target does not have to exist when the link is created.  Usage is easy to mix up, but takes the form of::
 
     ln -s target_file name_of_shortcut
 

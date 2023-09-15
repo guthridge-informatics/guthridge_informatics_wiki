@@ -1,108 +1,52 @@
-Using Rclone
-============
+Rclone
+======
 
-Rclone is program for retrieving and uploading data from a variety of services, including 
-object (``o3://``) 
-and bucket storage. 
-To access the object storage files, first install
-`rclone <https://rclone.org/downloads/>`__.
+Rclone is program for retrieving and uploading data from a variety of services. It is most useful 
+for interacting with object (``o3://``) and amazon or google bucket (``s3://`` or ``gs://``) 
+storage. It is, however, capable of downloading/uploading from a wide variety of sources, including
+``http``, ``ftp``, ``dropbox``.
 
-If you are running this from Walnut, instead load the module:
+Setup
+-----
 
-::
+Installation
+............
 
-   module load rclone
+Rclone can be installed
 
-and make sure that you run rclone as an interactive job with something
-like
+* from `the rclone website <https://rclone.org/downloads/>`__.
+* using the `conda <https://docs.conda.io/en/latest/>`__ or `mamba <https://mamba.readthedocs.io/en/latest/index.html>`__ package managers
+* using `apt <https://ubuntu.com/server/docs/package-management>`__, `brew <https://brew.sh/>`__, `dnf <https://rpm-software-management.github.io/>`__, or whatever software manager comes with your operating system
 
-::
-
-   srun --partition interactive --mem=16G --cpus-per-task=4 --pty rclone ...
-
-Using without a config file
----------------------------
-
-If you will be accessing the object storage often, I would suggest
-creating a config file.
-
-If you will be using this only very infrequently, you can access any of
-the object storage “tenants” with the following, replacing the bracketed
-variables with their respective values:
+If you are looking to run rclone on Walnut, instead load the module using:
 
 .. code-block:: bash
 
-   rclone \
-     --swift-tenant "{{TENANT}}" \
-     --swift-auth "https://o3.omrf.org/auth/v2.0" \
-     --swift-user "{{OMRF_USER_NAME}}" \
-     --swift-key "{{OMRF_PASSWORD}}" \
-     {{COMMAND}} \
-     :swift:
+   module load rclone
 
-Note that the ``:swift:`` in this case is both the name of the remote
-and the remote type. To reference files and folders in this tenant,
-place their name directly after the colon,
-i.e. ``:swift:PrecisionMed/analysis/rnaseq/blast``
+Configuration
+.............
+If you are going to be using rclone much, it is worthwhile to create a config file.  You can either run the command
+``rclone config`` and answer the prompts (most of which can be left at their default values), or you can directly
+create the file with whatever text editor you choose (though, the config file must be saved as a plain 
+text `TOML <https://toml.io/en/>`__ file. However, if you will just be accessing our Google bucket and OMRF object
+storage, a configuration file with the appropriate values can be found at
+``/Volumes/guth_aci_informatics/software/rclone.conf``.
 
-For the possible commands, see `the
-website <https://rclone.org/commands/>`__, but likely you will use one
-of the following: 
+The ``rclone.conf`` file should be placed in:
 
-- ``lsf`` - list files
-- ``lsd`` - list directories
-- ``copy`` - copy from ``SOURCE`` to ``DESTINATION``. This will overwrite files in ``DESTINATION`` *if* there is a 
-  newer version in ``SOURCE``
-- ``move`` - same 
-- ``delete`` - **WARNING** Do *NOT* use this unless you are absolutely sure. You *cannot* recover the files.
-- ``sync`` - synchronize the contents in ``DESTINATION`` with those in ``SOURCE``. Unlike copy, this will overwrite any existing files in ``DESTINATION`` *and delete any that are not present* in ``SOURCE``
+* Windows 10/11: ``%homepath%\.config\rclone\rclone.conf``
+* Linux variants: ``$HOME/.config/rclone/rclone.conf``
+* MacOS: ``$HOME/.rclone.conf``
 
-Tenants on OMRF Object Storage
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+If you wish to directly create the config file, it should look like:
 
-The James/Guthridge labs tenants of which I am aware (as of 2023-07-26)
+.. code-block:: TOML
+   :linenos:
+   :caption: example rclone.conf
+   :emphasize-lines: 1,4-5,7
 
-* LDAP_o3-guthridge-james - this is where a majority of all data is located
-* LDAP_ss-prj-guthridge-scrnaseq - Any single cell transcriptomics/genomics data is stored here 
-* LDAP_ss_prj_gaffney_guthridge_bold
-* LDAP_ss-prj-james-ordc
-
-.. important::
-  NOTE that rclone is a little odd in that it will copy all of the
-  contents of a directory, *but not the directory itself*! This means
-  that if you run the command
-
-  .. code-block:: bash
-
-     rclone copy -P source:home/pictures/ destination:home/
-
-  all of the files in the source picures subdirectory would be copied
-  into home itself. You need to include the destination directory as
-  well:
-
-  .. code-block:: bash
-    rclone copy -P source:home/pictures/ destination:home/pictures
-
-Creating a config file
-----------------------
-
-If you are going to be using rclone much, it is worthwhile to create a
-config file. You can either run the command ``rclone config`` and answer
-the prompts (most of which can be left at their default values), or you
-can directly create the file with whatever text editor you choose
-(though, the config file must be saved as a plain text
-`TOML <https://toml.io/en/>`__ file.
-
-rclone.conf should be placed in: \* Windows 10/11:
-``c:\users\USERNAME\.config\rclone\rclone.conf`` \* Linux variants:
-``/home/USERNAME/.config/rclone/rclone.conf`` \* MacOS:
-``/Users/USERNAME/.rclone.conf``
-
-An example of a config file would be:
-
-::
-
-   [{{TENANT_NICKNAME}}]
+   [{{NICKNAME}}]
    type = swift
    env_auth = false
    user = {{OMRF_USERNAME}}
@@ -126,19 +70,98 @@ An example of a config file would be:
    bucket_acl = authenticatedRead
    bucket_policy_only = true
 
-Where TENANT_NICKNAME can be anything, but whatever it is set to is the
-remote name you would use in the commands above. For example,
 
-::
+The value for ``NICKNAME`` does not need to match anything in particular, it is just a name that *you*
+assign to that source and use whenever accessing it in the commands. For example, 
 
-   rclone copy -P TENANT_NICKNAME:home/pictures OTHER_DEST_NICKNAME:home/pictures
+.. code-block:: bash
+   :caption: example rclone command
 
-The same is true for ``amazon`` and ``gcloud`` above. To retreive the
-storage key for google, see
-`here <https://cloud.google.com/storage/docs/authentication>`__;
-currently, there is one placed in
-``/Volumes/guth_aci_informatics/software/guthridge-nih-strides-projects-storage-key.json``
-on Walnut.
+   rclone copy -P NICKNAME:home/pictures OTHER_DEST_NICKNAME:home/pictures
+
+The same is true for ``amazon`` and ``gcloud`` above.
+
+Object storage
+~~~~~~~~~~~~~~
+
+See the :ref:`Object storage <Local computing object storage>` section in the
+ :ref:`Local computing resources <local_cluster>` page for more information.
+
+Google cloud
+~~~~~~~~~~~~
+
+To setup Google cloud storage, you will need a few pieces of information.  Namely:
+
+* project_id: At the moment, we just make use of one project, Guthridge-NIH-STRIDES-Projects
+  This is also often used in its lowercase form, mostly in commandline instances such as in the Rclone config.
+* `storage access key <https://cloud.google.com/storage/docs/authentication>`__: Follow the link for instructions
+  on how to retreive a storage access key. Currently, there is one placed in 
+  ``/Volumes/guth_aci_informatics/software/guthridge-nih-strides-projects-storage-key.json`` on Walnut
+  (or ``\\qlotsam\guth_aci_informaticssoftware/guthridge-nih-strides-projects-storage-key.json`` in Windows)
+* bucket region: see the documentation for `Regions and zone <https://cloud.google.com/compute/docs/regions-zones>`__.
+  All of our resources should be located in ``us-central1`` (i.e. located in Iowa)
+
+
+Using without a config file
+...........................
+
+If you will be using a particular source only very infrequently, you can access any of
+the object storage “tenants” with the following, replacing the bracketed
+variables with their respective values:
+
+.. code-block:: bash
+
+   rclone \
+     --swift-tenant "{{TENANT}}" \
+     --swift-auth "https://o3.omrf.org/auth/v2.0" \
+     --swift-user "{{OMRF_USER_NAME}}" \
+     --swift-key "{{OMRF_PASSWORD}}" \
+     {{COMMAND}} \
+     :swift:
+
+Note that the ``:swift:`` in this case is both the name of the remote
+and the remote type. To reference files and folders in this tenant,
+place their name directly after the colon,
+i.e. ``:swift:PrecisionMed/analysis/rnaseq/blast``
+
+Simlarly, one can use rclone to access an http source without configuration instead of using 
+something like :ref:`curl or wget <curl_wget>`. For example:
+
+.. code-block:: bash
+
+   rclone copy -P --http-url https://stuff.online/files :http: ./
+
+will download ``files`` to the present directory.
+
+
+For the possible commands, see `the
+website <https://rclone.org/commands/>`__, but likely you will use one
+of the following: 
+
+- ``lsf`` - list files
+- ``lsd`` - list directories
+- ``copy`` - copy from ``SOURCE`` to ``DESTINATION``. This will overwrite files in ``DESTINATION`` *if* there is a 
+  newer version in ``SOURCE``
+- ``move`` - same 
+- ``delete`` - **WARNING** Do *NOT* use this unless you are absolutely sure. You *cannot* recover the files.
+- ``sync`` - synchronize the contents in ``DESTINATION`` with those in ``SOURCE``. Unlike copy, this will overwrite any existing files in ``DESTINATION`` *and delete any that are not present* in ``SOURCE``
+
+.. important::
+  NOTE that rclone is a little odd in that it will copy all of the
+  contents of a directory, *but not the directory itself*! This means
+  that if you run the command
+
+  .. code-block:: bash
+
+   rclone copy -P source:home/pictures/ destination:home/
+
+  all of the files in the source ``picures`` subdirectory would be copied
+  into ``home`` itself. You need to include the destination directory as
+  well:
+
+  .. code-block:: bash
+   
+   rclone copy -P source:home/pictures/ destination:home/pictures
 
 Useful Parameters
 -----------------

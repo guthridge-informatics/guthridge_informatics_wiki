@@ -21,5 +21,6 @@ Guide to Guthridge/James lab compute resources
    public_datasets
    bioinfo_programming
    git_usage
+   rclone
    r_studio
    containers
