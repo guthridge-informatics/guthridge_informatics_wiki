@@ -1,3 +1,0 @@
-Bioinformatics Programming
-==========================
-

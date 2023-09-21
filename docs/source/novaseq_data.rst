@@ -13,7 +13,7 @@ Processing Novaseq Runs
 
 Processing the data for Novaseq runs consists of two major steps: `demultiplexing`_ and `alignment`_
 
-.. _Demultiplexing:
+.. _Demultiplexing: 
 
 Demultiplexing
 ~~~~~~~~~~~~~~~~~~

@@ -1,7 +1,7 @@
 Rclone
 ======
 
-Rclone is program for retrieving and uploading data from a variety of services. It is most useful 
+Rclone is a program for retrieving and uploading data from a variety of services. It is most useful 
 for interacting with object (``o3://``) and amazon or google bucket (``s3://`` or ``gs://``) 
 storage. It is, however, capable of downloading/uploading from a wide variety of sources, including
 ``http``, ``ftp``, ``dropbox``.

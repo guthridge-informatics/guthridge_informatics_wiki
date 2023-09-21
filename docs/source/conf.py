@@ -22,8 +22,8 @@ copyright = "2023, Miles Smith"
 author = "Miles Smith"
 
 # The full version, including alpha/beta/rc tags
-release = '0.2.3'
-version = '0.2.3'
+release = '0.2.4'
+version = '0.2.4'
 
 
 # -- General configuration ---------------------------------------------------

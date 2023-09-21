@@ -11,15 +11,14 @@ Guide to Guthridge/James lab compute resources
    :caption: Contents:
 
    basic_unix
-   analysis
    data_locations
    google_cloud
    jupyter_notebooks
-   local_cluster
+   slurm
+   walnut_local_cluster
    novaseq_data
    scrnaseq_data
    public_datasets
-   bioinfo_programming
    git_usage
    rclone
    r_studio
