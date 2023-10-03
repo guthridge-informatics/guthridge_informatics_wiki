@@ -6,6 +6,38 @@ for interacting with object (``o3://``) and amazon or google bucket (``s3://`` o
 storage. It is, however, capable of downloading/uploading from a wide variety of sources, including
 ``http``, ``ftp``, ``dropbox``.
 
+Quickstart
+----------
+
+Our primary use of Rclone is to copy from local data storage to remote locations. Once rclone has been 
+:ref:`configured <Configuration>`, you can copy data from a remote source to a local location by
+
+.. code-block:: bash
+
+   rclone copy -P /${LOCAL_DIRECTORY} ${SOURCE}:${BUCKET_NAME}/${REMOTE_DIRECTORY}
+
+or from remote source to local with the reverse
+
+.. code-block:: bash
+
+   rclone copy -P ${SOURCE}:${BUCKET_NAME}/${REMOTE_DIRECTORY} /${LOCAL_DIRECTORY}
+
+replacing the variables between ``${}`` with actual values.  In this instance "local" means a computer that you are 
+logged into (the actual computer below your desk or a terminal that is directly interacting with a cluster) and the
+``-P`` tells Rclone to show progress.
+
+So, for instance if you wanted to copy the folder ``tax_documents`` from the home folder of your local computer to a 
+bucked named ``oscar`` on a remote you've given the nickname ``google`` in the :ref:`rclone.config <rclone_config_file>`
+file described below, you would use the command
+
+.. code-block:: bash
+
+   rclone copy -P ~/tax_documents google:oscar/tax_documents
+
+and note that when you copy a directory, you're actually copying the *contents* of the directory, so you need to specify
+the target directory (things in ``~/tax_documents`` go in the ``google:oscar/tar_documents`` directory)
+
+
 Setup
 -----
 
@@ -15,8 +47,10 @@ Installation
 Rclone can be installed
 
 * from `the rclone website <https://rclone.org/downloads/>`__.
-* using the `conda <https://docs.conda.io/en/latest/>`__ or `mamba <https://mamba.readthedocs.io/en/latest/index.html>`__ package managers
-* using `apt <https://ubuntu.com/server/docs/package-management>`__, `brew <https://brew.sh/>`__, `dnf <https://rpm-software-management.github.io/>`__, or whatever software manager comes with your operating system
+* using the `conda <https://docs.conda.io/en/latest/>`__ or `mamba <https://mamba.readthedocs.io/en/latest/index.html>`__ 
+  package managers
+* using `apt <https://ubuntu.com/server/docs/package-management>`__, `brew <https://brew.sh/>`__, 
+  `dnf <https://rpm-software-management.github.io/>`__, or whatever software manager comes with your operating system
 
 If you are looking to run rclone on Walnut, instead load the module using:
 
@@ -40,6 +74,8 @@ The ``rclone.conf`` file should be placed in:
 * MacOS: ``$HOME/.rclone.conf``
 
 If you wish to directly create the config file, it should look like:
+
+.. _rclone_config_file:
 
 .. code-block:: TOML
    :linenos:
@@ -85,7 +121,7 @@ Object storage
 ~~~~~~~~~~~~~~
 
 See the :ref:`Object storage <Local computing object storage>` section in the
- :ref:`Local computing resources <local_cluster>` page for more information.
+:ref:`Local computing resources <Local Cluster>` page for more information.
 
 Google cloud
 ~~~~~~~~~~~~
@@ -144,7 +180,8 @@ of the following:
   newer version in ``SOURCE``
 - ``move`` - same 
 - ``delete`` - **WARNING** Do *NOT* use this unless you are absolutely sure. You *cannot* recover the files.
-- ``sync`` - synchronize the contents in ``DESTINATION`` with those in ``SOURCE``. Unlike copy, this will overwrite any existing files in ``DESTINATION`` *and delete any that are not present* in ``SOURCE``
+- ``sync`` - synchronize the contents in ``DESTINATION`` with those in ``SOURCE``. Unlike copy, this will overwrite any 
+  existing files in ``DESTINATION`` *and delete any that are not present* in ``SOURCE``
 
 .. important::
   NOTE that rclone is a little odd in that it will copy all of the
