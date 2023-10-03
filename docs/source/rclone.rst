@@ -26,8 +26,8 @@ replacing the variables between ``${}`` with actual values.  In this instance "l
 logged into (the actual computer below your desk or a terminal that is directly interacting with a cluster) and the
 ``-P`` tells Rclone to show progress.
 
-So, for instance if you wanted to copy the folder ``tax_documents`` from the home folder of your local computer to a 
-bucked named ``oscar`` on a remote you've given the nickname ``google`` in the :ref:`rclone.config <rclone_config_file>`
+So, for instance if you wanted to copy the directory ``tax_documents`` from the home folder of your local computer to a 
+bucket named ``oscar`` on a remote you've given the nickname ``google`` in the :ref:`rclone.config <rclone_config_file>`
 file described below, you would use the command
 
 .. code-block:: bash
